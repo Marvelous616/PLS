@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>G-Park - Select Your Role</title>
+    <link rel="stylesheet" href="buttons.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #17111C;
+            font-family: Arial, Helvetica, sans-serif;
+            color: white;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            color: #9952E0;
+        }
+        p {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .role-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+        }
+        .role-button {
+            padding: 15px 40px;
+            background-color: #9952E0;
+            border: none;
+            border-radius: 50px;
+            color: #17111C;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-align: center;
+        }
+        .role-button:hover {
+            background-color: #8441D0;
+            transform: translateY(-2px);
+        }
+        .back-link {
+            margin-top: 20px;
+            color: #9952E0;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Select Your Role</h1>
+        <p>Please select your role to proceed to the appropriate login page.</p>
+        
+        <div class="role-buttons">
+            <a href="studentlogin.html" style="text-decoration: none;">
+                <button class="role-button">Student</button>
+            </a>
+            <a href="Facultylogin.html" style="text-decoration: none;">
+                <button class="role-button">Faculty</button>
+            </a>
+            <a href="securitylogin.html" style="text-decoration: none;">
+                <button class="role-button">Security</button>
+            </a>
+        </div>
+        
+        <a href="main.html" class="back-link">← Back to Home</a>
+    </div>
+</body>
+</html> 

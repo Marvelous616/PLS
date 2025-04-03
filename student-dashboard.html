@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>G-Park - Student Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #17111C;
+            color: white;
+        }
+        header {
+            background-color: #120d17;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #9952E0;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #9952E0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        .logout-btn {
+            margin-left: 15px;
+            padding: 8px 15px;
+            background-color: transparent;
+            border: 1px solid #9952E0;
+            border-radius: 4px;
+            color: #9952E0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .logout-btn:hover {
+            background-color: #9952E0;
+            color: #17111C;
+        }
+        .container {
+            display: flex;
+            height: calc(100vh - 80px);
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #1d1523;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .action-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #9952E0;
+            border: none;
+            border-radius: 4px;
+            color: #17111C;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .action-btn:hover {
+            background-color: #8441D0;
+            transform: translateY(-2px);
+        }
+        .secondary-btn {
+            background-color: transparent;
+            border: 1px solid #9952E0;
+            color: #9952E0;
+        }
+        .secondary-btn:hover {
+            background-color: rgba(153, 82, 224, 0.1);
+        }
+        .map-container {
+            flex: 1;
+            padding: 20px;
+            overflow: auto;
+        }
+        .map {
+            height: 100%;
+            background-color: #2a1f30;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        .map-title {
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.3);
+            margin: 0;
+        }
+        .parking-lots {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+        }
+        .lot {
+            aspect-ratio: 1/1;
+            background-color: #43A047;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .lot:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(153, 82, 224, 0.5);
+        }
+        .lot.occupied {
+            background-color: #E53935;
+        }
+        .lot.reserved {
+            background-color: #FFB300;
+        }
+        .lot.selected {
+            border: 3px solid #9952E0;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background-color: #2a1f30;
+            padding: 30px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        .modal-title {
+            margin-top: 0;
+            color: #9952E0;
+        }
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+            gap: 10px;
+        }
+        .modal-btn {
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+        }
+        .confirm-btn {
+            background-color: #9952E0;
+            color: white;
+        }
+        .cancel-btn {
+            background-color: transparent;
+            border: 1px solid #9952E0;
+            color: #9952E0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">G-Park</div>
+        <div class="user-info">
+            <div class="user-avatar">S</div>
+            <div>Student</div>
+            <a href="main.html" class="logout-btn">Logout</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="sidebar">
+            <button class="action-btn" id="bookLotBtn">Book a LOT</button>
+            <button class="action-btn" id="unlockLotBtn">Unlock a LOT</button>
+            <button class="action-btn secondary-btn">View My Bookings</button>
+            <button class="action-btn secondary-btn">Parking History</button>
+            <button class="action-btn secondary-btn">Help & Support</button>
+        </div>
+
+        <div class="map-container">
+            <div class="map">
+                <h2 class="map-title">Campus Parking Map</h2>
+                <div class="parking-lots" id="parkingLots">
+                    <!-- Parking lots will be dynamically generated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking Modal -->
+    <div class="modal" id="bookingModal">
+        <div class="modal-content">
+            <h2 class="modal-title">Book Parking Lot</h2>
+            <p>You are about to book parking lot <span id="selectedLot">A1</span>. Do you want to proceed?</p>
+            <div class="modal-buttons">
+                <button class="modal-btn cancel-btn" id="cancelBooking">Cancel</button>
+                <button class="modal-btn confirm-btn" id="confirmBooking">Confirm Booking</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Unlock Modal -->
+    <div class="modal" id="unlockModal">
+        <div class="modal-content">
+            <h2 class="modal-title">Unlock Parking Lot</h2>
+            <p>You are about to unlock parking lot <span id="unlockLot">A1</span>. Do you want to proceed?</p>
+            <div class="modal-buttons">
+                <button class="modal-btn cancel-btn" id="cancelUnlock">Cancel</button>
+                <button class="modal-btn confirm-btn" id="confirmUnlock">Unlock Lot</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Generate parking lots
+        const parkingLotsContainer = document.getElementById('parkingLots');
+        const rows = ['A', 'B', 'C', 'D', 'E'];
+        let selectedLot = null;
+        
+        // Create parking lots
+        rows.forEach(row => {
+            for (let i = 1; i <= 5; i++) {
+                const lot = document.createElement('div');
+                const lotId = `${row}${i}`;
+                lot.className = 'lot';
+                
+                // Randomly assign some lots as occupied or reserved for demo
+                const random = Math.random();
+                if (random < 0.3) {
+                    lot.classList.add('occupied');
+                } else if (random < 0.5) {
+                    lot.classList.add('reserved');
+                }
+                
+                lot.textContent = lotId;
+                lot.setAttribute('data-lot', lotId);
+                
+                lot.addEventListener('click', function() {
+                    // Don't allow selection of occupied lots
+                    if (this.classList.contains('occupied')) {
+                        alert('This lot is already occupied.');
+                        return;
+                    }
+                    
+                    // Clear previous selection
+                    const lots = document.querySelectorAll('.lot');
+                    lots.forEach(l => l.classList.remove('selected'));
+                    
+                    // Select this lot
+                    this.classList.add('selected');
+                    selectedLot = this.getAttribute('data-lot');
+                    
+                    // Update modal texts
+                    document.getElementById('selectedLot').textContent = selectedLot;
+                    document.getElementById('unlockLot').textContent = selectedLot;
+                });
+                
+                parkingLotsContainer.appendChild(lot);
+            }
+        });
+        
+        // Modal controls
+        const bookLotBtn = document.getElementById('bookLotBtn');
+        const unlockLotBtn = document.getElementById('unlockLotBtn');
+        const bookingModal = document.getElementById('bookingModal');
+        const unlockModal = document.getElementById('unlockModal');
+        const cancelBooking = document.getElementById('cancelBooking');
+        const confirmBooking = document.getElementById('confirmBooking');
+        const cancelUnlock = document.getElementById('cancelUnlock');
+        const confirmUnlock = document.getElementById('confirmUnlock');
+        
+        bookLotBtn.addEventListener('click', function() {
+            if (!selectedLot) {
+                alert('Please select a parking lot first.');
+                return;
+            }
+            bookingModal.style.display = 'flex';
+        });
+        
+        unlockLotBtn.addEventListener('click', function() {
+            if (!selectedLot) {
+                alert('Please select a parking lot first.');
+                return;
+            }
+            unlockModal.style.display = 'flex';
+        });
+        
+        cancelBooking.addEventListener('click', function() {
+            bookingModal.style.display = 'none';
+        });
+        
+        confirmBooking.addEventListener('click', function() {
+            const lotElement = document.querySelector(`.lot[data-lot="${selectedLot}"]`);
+            
+            // Mark the lot as reserved
+            lotElement.classList.remove('selected');
+            lotElement.classList.add('reserved');
+            
+            bookingModal.style.display = 'none';
+            alert(`Parking lot ${selectedLot} has been successfully booked!`);
+        });
+        
+        cancelUnlock.addEventListener('click', function() {
+            unlockModal.style.display = 'none';
+        });
+        
+        confirmUnlock.addEventListener('click', function() {
+            unlockModal.style.display = 'none';
+            alert(`Parking lot ${selectedLot} has been unlocked. You can now park your vehicle.`);
+        });
+        
+        // Close modals when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target === bookingModal) {
+                bookingModal.style.display = 'none';
+            }
+            if (event.target === unlockModal) {
+                unlockModal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html> 
